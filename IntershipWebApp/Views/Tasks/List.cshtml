@@ -1,0 +1,102 @@
+﻿@model IEnumerable<IntershipWebApp.Models._Task>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Список задач</h1>
+
+<p>
+    <button id="addTaskBtn">Добавить</button>
+    <button id="deleteTaskBtn">Удалить</button>
+    <button id="editTaskBtn">Редактировать</button>
+</p>
+
+
+<table id="taskTable" class="table">
+    <thead>
+        <tr>
+            <th>Наименование</th>
+            <th>Описание</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in Model)
+        {
+            <tr data-task-id="@task.Id">
+                <td>@task.Name</td>
+                <td>@task.Description</td>
+                <td>@task.Status.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        // Получаем все строки таблицы
+        var rows = document.querySelectorAll("#taskTable tbody tr");
+        rows.forEach(function (row) {
+            row.addEventListener('click', function () {
+                // Удаляем класс 'table-active' у всех строк таблицы
+                rows.forEach(function (otherRow) {
+                    otherRow.classList.remove('table-active');
+                });
+                // Добавляем класс 'table-active' к выбранной строке
+                row.classList.add('table-active');
+            });
+        });
+
+
+        document.getElementById('addTaskBtn').addEventListener('click', function () {
+            window.location.href = '/Tasks/Create';
+        });
+
+
+
+        document.getElementById('deleteTaskBtn').addEventListener('click', function () {
+            var selectedRow = document.querySelector("#taskTable tbody tr.table-active");
+            if (selectedRow) {
+                var taskId = selectedRow.dataset.taskId; // Предполагается, что у строки таблицы есть атрибут data-task-id, содержащий идентификатор задачи
+                var confirmation = confirm('Вы уверены, что хотите удалить выбранную задачу?'); // Запрашиваем подтверждение удаления
+
+                if (confirmation) {
+                    // Если пользователь подтвердил удаление, отправляем запрос на сервер для удаления задачи
+                    fetch('/Tasks/Delete/' + taskId, {
+                        method: 'DELETE'
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // Если задача успешно удалена, обновляем страницу
+                                location.reload();
+                            } else {
+                                // Если возникла ошибка при удалении задачи, выводим сообщение об ошибке
+                                alert('Произошла ошибка при удалении задачи!');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                            alert('Произошла ошибка при удалении задачи!');
+                        });
+                }
+            } else {
+                alert('Выберите задачу для удаления!');
+            }
+        });
+
+
+        document.getElementById('editTaskBtn').addEventListener('click', function () {
+            var selectedRow = document.querySelector("#taskTable tbody tr.table-active");
+            if (selectedRow) {
+                var taskId = selectedRow.dataset.taskId; // Предполагается, что у строки таблицы есть атрибут data-task-id, содержащий идентификатор задачи
+                // Перенаправляем пользователя на страницу редактирования задачи с идентификатором taskId
+                window.location.href = '/Tasks/Edit/' + taskId;
+            } else {
+                alert('Выберите задачу для редактирования!');
+            }
+        });
+
+    </script>
+}
+
