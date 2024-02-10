@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IntershipWebApp.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20240208212620_InitialMigration")]
+    [Migration("20240210195504_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

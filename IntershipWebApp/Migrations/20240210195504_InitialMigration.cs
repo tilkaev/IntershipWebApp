@@ -46,6 +46,28 @@ namespace IntershipWebApp.Migrations
                 name: "IX_Tasks_StatusId",
                 table: "Tasks",
                 column: "StatusId");
+
+
+            migrationBuilder.InsertData(
+                table: "Statuses",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Создана" },
+                    { 2, "В работе" },
+                    { 3, "Завершена" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "Id", "Name", "Description", "StatusId" },
+                values: new object[,]
+                {
+                    { 1, "Задача 1", "Описание задачи 1", 1 },
+                    { 2, "Задача 2", "Описание задачи 2", 2 },
+                    { 3, "Задача 3", "Описание задачи 3", 3 }
+                });
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
